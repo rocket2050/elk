@@ -1,0 +1,8 @@
+---
+
+elasticsearch01_ip: "10.253.73.143" 
+elasticsearch02_ip: "10.253.73.144"
+elasticsearch_port: 9200
+
+#curator_max_keep_days: 14
+#curator_close_after_days: 7

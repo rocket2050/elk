@@ -1,0 +1,6 @@
+---
+#- name: Including Java
+#  include: java.yml
+
+- name: Including Logstash playbook
+  include: logstash.yml

@@ -1,0 +1,13 @@
+---
+dependencies:
+  - java
+  platforms:
+    - name: Ubuntu
+      versions:
+        - saucy
+        - trusty
+  categories:
+    - development
+    - system
+
+dependencies: []

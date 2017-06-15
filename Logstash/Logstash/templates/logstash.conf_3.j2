@@ -1,0 +1,34 @@
+input {
+  file {
+    path => [ "/opt/ELK/logs/ucc*" ]
+        type => "ucc"
+    start_position => "beginning"
+    sincedb_path => "/dev/null"
+        ignore_older => 0
+  }
+}
+filter {
+  csv {
+      separator => ","
+         #Scenario,Test Mode,Build Version,Timestamp,Result,Message,Platform,Platform Version,Make,Model,MSISDN Outgoing,MSISDN Incoming,Response Time, Video URL
+         columns => ["Scenario","Test Mode","Build Version","Case Number","Log_Timestamp","Result","Message","Platform","Platform Version","Make","Model","MSISDN Outgoing","MSISDN Incoming","Response_Time","Video URL"]
+  }
+  date {
+                locale => "en"
+                match => [ "Log_Timestamp", "YYYY-MM-dd HH:mm:ss", "ISO8601" ]
+                timezone => "America/Los_Angeles"
+                remove_field =>["Log_Timestamp"]
+        }
+
+  mutate {
+    convert => { "Response_Time" => "integer" }
+  }
+
+}
+output  {
+        elasticsearch {
+                hosts => ["{{ elasticsearch01_ip }}:{{ elasticsearch_port }}", "{{ elasticsearch02_ip }}:{{ elasticsearch_port }}"]
+                index => "digits_ucc"
+        }
+        stdout { codec => rubydebug }
+}

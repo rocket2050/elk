@@ -1,0 +1,45 @@
+---
+
+#- name: Install logstash .deb package from the internet.   
+#  apt:     
+#    deb: https://artifacts.elastic.co/downloads/logstash/logstash-5.4.0.deb
+#- name: Update and upgrade apt packages
+#  become: true
+#  apt:
+#    upgrade: yes
+#    update_cache: yes
+#    cache_valid_time: 86400
+- name: add key
+  apt_key:
+     data: "{{ lookup('file', 'apt.asc') }}"
+     state: present
+
+- name: Add logstash repository
+  apt_repository: repo='deb https://artifacts.elastic.co/packages/5.x/apt stable main' state=present
+
+- name: run update
+  shell: apt-get update
+
+- name: Install Java
+  apt: pkg=default-jdk state=installed
+
+- name: Install Logstash
+  apt: pkg=logstash state=installed force=yes
+
+#- name: Install logstash package
+#  apt: name=logstash state=present update_cache=yes force=yes
+
+- name: Ensure logstash config is in place
+  template: src= {{item}} dest= /etc/logstash/conf.d
+  with_fileglob:
+    - ../templates/*.j2   
+  notify:
+    - restart logstash
+
+- name: Starting logstash 
+  service: name=logstash state=started enabled=yes
+
+- name: To make service available after reboot
+  command: update-rc.d logstash defaults 96 9
+  notify:
+    -  restart logstash   

@@ -1,0 +1,4 @@
+- hosts: elk03_logstash01
+  roles:
+    - { role: "Logstash" }
+
