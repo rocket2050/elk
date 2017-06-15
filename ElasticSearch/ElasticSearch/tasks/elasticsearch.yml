@@ -1,0 +1,55 @@
+---
+
+# Install latest version of "openjdk-6-jdk" ignoring "install-reccomends"
+#- apt: pkg=openjdk-8-jdk state=latest install_recommends=no
+- name: run update
+  shell: apt-get update
+
+- name: Install Java
+  apt: pkg=default-jdk state=installed
+
+
+#- name: Install elasticsearch key
+#  apt_key: url=https://packages.elastic.co/GPG-KEY-elasticsearch state=present
+
+#  environment:
+#    http_proxy: http://10.253.31.119:3128
+#    https_proxy: http://10.253.31.119:3128
+
+- name: add key
+  apt_key:
+     data: "{{ lookup('file', 'apt.asc') }}"
+     state: present
+
+- name: Add Elasticseach repository   
+  apt_repository: repo='deb https://artifacts.elastic.co/packages/5.x/apt stable main' state=present
+
+#- name: Install elasticsearch .deb package from the internet.
+#  apt:
+#    deb: https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-5.3.1.deb
+
+#  environment:
+#    http_proxy: http://10.253.31.119:3128
+#    https_proxy: http://10.253.31.119:3128
+
+- name: Ensure Elasticseach is installed
+  apt: pkg={{item}} state=installed force=yes
+  with_items:
+    - elasticsearch
+
+#- name: Configure elasticsearch.yml
+#  template:
+#    src: elasticsearch.yml.j2
+#    dest: /etc/elasticsearch/elasticsearch.yml
+#  notify: elasticsearch restart
+
+- name: Configure elasticsearch.yml {{inventory_hostname}}
+  template:
+    src: elasticsearch.yml.j2 
+    dest: /etc/elasticsearch/elasticsearch.yml
+  notify: restart elasticsearch
+
+- name: To make elasticsearch service available after reboot
+  command: update-rc.d elasticsearch defaults 95 10
+  notify:
+     - restart elasticsearch

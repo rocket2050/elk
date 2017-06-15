@@ -1,0 +1,6 @@
+---
+- hosts: elasticsearch_node_1,elasticsearch_node_2
+  roles:
+    - { role: "ElasticSearch" }
+
+~                          

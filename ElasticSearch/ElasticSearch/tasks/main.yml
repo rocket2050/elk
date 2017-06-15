@@ -1,0 +1,6 @@
+---
+#- name: Including Java
+#  include: java.yml
+
+- name: Including Elasticsearch playbook
+  include: elasticsearch.yml
