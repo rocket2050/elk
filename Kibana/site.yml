@@ -1,0 +1,4 @@
+- hosts: elk03_kibana01
+  roles:
+    - { role: "Kibana" }
+

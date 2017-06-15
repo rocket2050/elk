@@ -1,0 +1,21 @@
+---
+- name: Add Kibana repository
+  apt_repository: repo="deb https://artifacts.elastic.co/packages/5.x/apt stable main" state=present
+
+- name: Installing  kibana package
+  apt: name=kibana state=present update_cache=yes force=yes
+
+
+- name: Configure kibana.yml
+  template:
+    src: kibana.yml.j2
+    dest: /etc/kibana/kibana.yml
+  notify: restart kibana
+
+- name: Start service kibana
+  service: name=kibana state=started enabled=yes
+
+- name: To make service available after reboot
+  command: update-rc.d kibana defaults 96 9
+  notify:
+     - restart kibana

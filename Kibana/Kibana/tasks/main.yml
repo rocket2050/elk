@@ -1,0 +1,9 @@
+---
+
+- name: Including Kibana playbook
+  include: kibana.yml
+
+#- name: Including Kibana dashboards playbook
+#  include: dashboards.yml
+
+

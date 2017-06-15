@@ -1,0 +1,10 @@
+---
+dependencies:
+  platforms:
+    - name: Ubuntu
+      versions:
+        - saucy
+        - trusty
+  categories:
+    - development
+    - system
